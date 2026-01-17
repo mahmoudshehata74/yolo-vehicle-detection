@@ -30,6 +30,12 @@ bounding boxes with confidence scores and FPS in real time.
 - Conversion pipeline:
   PyTorch (.pt) → ONNX → ONNX Runtime (CUDA)
 
+The ONNX models are included in this repository for ease of testing and evaluation.
+
+- `models/yolo11n.onnx`       (Detection)
+- `models/yolo11n-seg.onnx`   (Segmentation)
+
+These models were converted using Ultralytics YOLO export.
 ---
 
 ## Build
