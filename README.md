@@ -65,10 +65,12 @@ cmake --build . --config Release
 
 ## Run
 - Detection
-```bash task1_detector.exe video2.mp4
+```bash 
+task1_detector.exe video2.mp4
 ```
 - Segmentation
-```bash task2_segmenter.exe video.mp4
+```bash
+task2_segmenter.exe video.mp4
 ```
 ---
 
