@@ -43,6 +43,12 @@ yolo_tasks_cpp/
 └── demo_segmentation.mp4
 
 
+The ONNX models are included in this repository for ease of testing and evaluation.
+
+- `models/yolo11n.onnx`       (Detection)
+- `models/yolo11n-seg.onnx`   (Segmentation)
+
+These models were converted using Ultralytics YOLO export.
 ---
 
 ## Build
