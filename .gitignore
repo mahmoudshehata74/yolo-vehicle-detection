@@ -1,0 +1,40 @@
+# Build folders
+build/
+out/
+x64/
+Debug/
+Release/
+.vs/
+
+# Compiled files
+*.exe
+*.dll
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# IDE files
+*.user
+*.suo
+*.sln
+*.vcxproj*
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Videos
+*.mp4
+*.avi
+*.mkv
+
+# Models
+# models/*.onnx
+
+# Screenshots
+screenshot_*.jpg
