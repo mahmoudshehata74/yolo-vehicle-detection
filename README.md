@@ -84,9 +84,12 @@ task2_segmenter.exe video.mp4
 
 ## Demo Videos
 
-Demo videos for both detection and segmentation are available in the GitHub Releases section:
+Recorded demo videos for both tasks are available in the GitHub Releases section:
 
 👉 **https://github.com/mahmoudshehata74/yolo-vehicle-detection/releases/tag/v1.0**
+
+- `demo_detection.mp4` – Real-time vehicle detection with FPS overlay  
+- `demo_segmentation.mp4` – Pixel-perfect segmentation with transparent masks
 
 ## Author
 - Mahmoud Shehata Ahmed
