@@ -78,7 +78,15 @@ task2_segmenter.exe video.mp4
 
 - Detection: ~50–55 FPS.
 - Segmentation: ~25–30 FPS.
-- Tested on NVIDIA GTX 1650 Ti GPU
+- Tested on NVIDIA GTX 1650 Ti 
+
+---
+
+## Demo Videos
+
+Demo videos for both detection and segmentation are available in the GitHub Releases section:
+
+👉 **https://github.com/mahmoudshehata74/yolo-vehicle-detection/releases/tag/v1.0**
 
 ## Author
 - Mahmoud Shehata Ahmed
