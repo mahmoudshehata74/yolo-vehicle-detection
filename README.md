@@ -1,77 +1,71 @@
-﻿# Real-Time Truck Detection (YOLOv11 / YOLOv12) – C++
+﻿# Real-Time Vehicle Detection & Segmentation (YOLOv11) – C++
 
 ## Overview
-This project implements a **real-time object detector in C++** that detects **trucks**
-(and optionally other vehicles) using **YOLOv11/YOLOv12**, accelerated with **GPU (CUDA)**
-via **ONNX Runtime**.
+A real-time C++ application for **vehicle detection and instance segmentation**
+using **YOLOv11**, accelerated with **GPU (CUDA)** via **ONNX Runtime**.
 
-The system supports video files, camera input, and RTSP streams, and displays
-bounding boxes with confidence scores and FPS in real time.
+Supports video files, camera input, and RTSP streams with real-time visualization.
+
+---
+
+## Tasks
+
+**Task 1 – Detection**
+- Vehicle detection (Car, Bus, Truck)
+- Bounding boxes with confidence
+- FPS overlay (instant + average)
+
+**Task 2 – Segmentation**
+- Pixel-perfect instance segmentation
+- Transparent masks (adjustable alpha)
+- Supports vehicles and persons
 
 ---
 
 ## Features
-- Real-time object detection in C++
-- YOLOv11 / YOLOv12 detection model (ONNX)
-- GPU-accelerated inference using ONNX Runtime (CUDA)
-- Truck detection (COCO class id = 7)
-- Optional detection of other vehicles (car, bus)
-- Bounding boxes with confidence scores
+- Real-time C++ inference
+- YOLOv11 Detection & Segmentation
+- ONNX Runtime (CUDA)
 - Non-Maximum Suppression (NMS)
-- FPS overlay (instantaneous + moving average)
-- Video / Camera / RTSP input via CLI
-- OpenCV visualization window
+- Video / Camera / RTSP input
+- Video recording (MP4)
+- Screenshot capture
 
 ---
 
-## Model
-- Model: YOLOv11n (Detection)
-- Format: ONNX
-- Conversion pipeline:
-  PyTorch (.pt) → ONNX → ONNX Runtime (CUDA)
+## Project Structure
+yolo_tasks_cpp/
+├── models/ # ONNX models
+├── src/ # detector, segmenter, utils
+├── CMakeLists.txt
+├── README.md
+├── demo_detection.mp4
+└── demo_segmentation.mp4
+
 
 ---
 
 ## Build
 
-### Requirements
-- C++17
-- OpenCV
-- ONNX Runtime (GPU build)
-- CUDA Toolkit + cuDNN
-- NVIDIA GPU (driver installed)
-
-### Build (CMake + Visual Studio)
-Open the project folder in Visual Studio (CMake) and build the `task1_detector` target.
+```bash
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
 
 ---
 
 ## Run
+Detection
+task1_detector.exe video.mp4
 
-### Video file
-```bash
-task1_detector.exe demo.mp4   ( task1_detector.exe "C:\projects\yolo_tasks_cpp\demo.mp4 )
+Segmentation
+task2_segmenter.exe video.mp4
 
-Camera
-task1_detector.exe 0
-RTSP   
-task1_detector.exe rtsp://username:password@ip:port/stream
+## Performance
+Detection: ~25–30 FPS
+Segmentation: ~30–35 FPS
+(Tested on NVIDIA RTX GPU)
 
-
-### Output
-
-- Live video window with:
-		- Bounding boxes
-		- Confidence scores
-		- FPS overlay
-
-### Notes
-	- Truck-only filtering is implemented (COCO class id = 7).
-	- For demonstration clarity, the demo may include detection of trucks and other vehicles (car, bus).
-	- Confidence/NMS thresholds can be tuned based on the scene and video quality.
-
-### Demo
-	- See demo.mp4 (or demo_out.mp4 if video saving is enabled) for a real-time demonstration with visible FPS.
-
-### Author
+## Author
 Mahmoud Shehata Ahmed
