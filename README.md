@@ -34,6 +34,7 @@ Supports video files, camera input, and RTSP streams with real-time visualizatio
 ---
 
 ## Project Structure
+```
 yolo_tasks_cpp/
 ├── models/ # ONNX models
 ├── src/ # detector, segmenter, utils
@@ -50,7 +51,7 @@ The ONNX models are included in this repository for ease of testing and evaluati
 
 These models were converted using Ultralytics YOLO export.
 ---
-
+```
 ## Build
 
 ```bash
@@ -59,19 +60,24 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
 
+```
 ---
 
 ## Run
-Detection
-task1_detector.exe video.mp4
-
-Segmentation
-task2_segmenter.exe video.mp4
+- Detection
+```bash task1_detector.exe video2.mp4
+```
+- Segmentation
+```bash task2_segmenter.exe video.mp4
+```
+---
 
 ## Performance
-Detection: ~25–30 FPS
-Segmentation: ~30–35 FPS
-(Tested on NVIDIA RTX GPU)
+
+- Detection: ~50–55 FPS.
+- Segmentation: ~25–30 FPS.
+- Tested on NVIDIA GTX 1650 Ti GPU
 
 ## Author
-Mahmoud Shehata Ahmed
+- Mahmoud Shehata Ahmed
+
