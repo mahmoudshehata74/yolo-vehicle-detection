@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-// ------------------------------------------------------------------
-//                         FPS Counter
-// ------------------------------------------------------------------
 
 FPSCounter::FPSCounter()
 	: instantFPS(0.0), averageFPS(0.0), initialized(false) {
@@ -18,7 +15,6 @@ void FPSCounter::update() {
 		double frameTime = std::chrono::duration<double>(now - lastTime).count();
 		instantFPS = 1.0 / frameTime;
 
-		// Exponential moving average
 		if (averageFPS < 1.0)
 			averageFPS = instantFPS;
 		else
@@ -38,9 +34,7 @@ std::string FPSCounter::toString() const {
 	return std::string(buffer);
 }
 
-// ------------------------------------------------------------------
 //                        Preprocessing
-// ------------------------------------------------------------------
 
 cv::Mat letterbox(const cv::Mat& image, LetterboxInfo& info) {
 	// Calculate scale to fit image in input size
@@ -56,7 +50,6 @@ cv::Mat letterbox(const cv::Mat& image, LetterboxInfo& info) {
 	info.padX = (Config::INPUT_WIDTH - newW) / 2;
 	info.padY = (Config::INPUT_HEIGHT - newH) / 2;
 
-	// Resize and add padding
 	cv::Mat resized, padded;
 	cv::resize(image, resized, cv::Size(newW, newH));
 	cv::copyMakeBorder(resized, padded,
@@ -89,9 +82,7 @@ std::vector<float> imageToTensor(const cv::Mat& image) {
 	return tensor;
 }
 
-// ------------------------------------------------------------------
 //                        Postprocessing
-// ------------------------------------------------------------------
 
 bool isVehicleClass(int classId) {
 	auto& classes = Config::VEHICLE_CLASSES;
@@ -200,9 +191,7 @@ std::vector<Segmentation> applyNMSSeg(std::vector<Segmentation>& segmentations) 
 	return result;
 }
 
-// ------------------------------------------------------------------
 //                        Mask Processing
-// ------------------------------------------------------------------
 
 cv::Mat processMask(const std::vector<float>& maskCoeffs,
 	const float* maskPrototypes,
@@ -247,14 +236,12 @@ cv::Mat processMask(const std::vector<float>& maskCoeffs,
 	x2 = std::max(x1 + 1, std::min(x2, Config::INPUT_WIDTH));
 	y2 = std::max(y1 + 1, std::min(y2, Config::INPUT_HEIGHT));
 
-	// Crop mask to bounding box
 	cv::Mat croppedMask = cv::Mat::zeros(Config::INPUT_HEIGHT, Config::INPUT_WIDTH, CV_32F);
 	if (x2 > x1 && y2 > y1) {
 		maskResized(cv::Rect(x1, y1, x2 - x1, y2 - y1))
 			.copyTo(croppedMask(cv::Rect(x1, y1, x2 - x1, y2 - y1)));
 	}
 
-	// Remove letterbox padding
 	int cropX = std::max(0, info.padX);
 	int cropY = std::max(0, info.padY);
 	int cropW = std::max(1, std::min(Config::INPUT_WIDTH - 2 * info.padX,
@@ -264,7 +251,6 @@ cv::Mat processMask(const std::vector<float>& maskCoeffs,
 
 	cv::Mat maskCropped = croppedMask(cv::Rect(cropX, cropY, cropW, cropH));
 
-	// Resize to original image size
 	cv::Mat maskFinal;
 	cv::resize(maskCropped, maskFinal, originalSize, 0, 0, cv::INTER_LINEAR);
 
@@ -276,30 +262,23 @@ cv::Mat processMask(const std::vector<float>& maskCoeffs,
 	return binaryMask;
 }
 
-// ------------------------------------------------------------------
 //                          Drawing
-// ------------------------------------------------------------------
 
 void drawDetection(cv::Mat& image, const Detection& det) {
-	// Draw bounding box
 	cv::rectangle(image, det.box, det.color, 2);
 
-	// Create label text
 	char label[64];
 	snprintf(label, sizeof(label), "%s %.0f%%", det.className.c_str(), det.confidence * 100);
 
-	// Calculate label position
 	int baseline;
 	cv::Size textSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.6, 2, &baseline);
 	int top = std::max(det.box.y, textSize.height + 10);
 
-	// Draw label background
 	cv::rectangle(image,
 		cv::Point(det.box.x, top - textSize.height - 10),
 		cv::Point(det.box.x + textSize.width + 5, top),
 		det.color, cv::FILLED);
 
-	// Draw label text
 	cv::putText(image, label, cv::Point(det.box.x + 2, top - 5),
 		cv::FONT_HERSHEY_SIMPLEX, 0.6, Config::COLOR_WHITE, 2);
 }
@@ -311,17 +290,14 @@ void drawDetections(cv::Mat& image, const std::vector<Detection>& detections) {
 }
 
 void drawSegmentation(cv::Mat& image, const Segmentation& seg, float alpha) {
-	// Draw mask overlay
 	if (!seg.mask.empty()) {
 		cv::Mat colorMask = cv::Mat::zeros(image.size(), image.type());
 		colorMask.setTo(seg.color, seg.mask);
 		cv::addWeighted(image, 1.0, colorMask, alpha, 0, image);
 	}
 
-	// Draw bounding box
 	cv::rectangle(image, seg.box, seg.color, 2);
 
-	// Create and draw label
 	char label[64];
 	snprintf(label, sizeof(label), "%s %.0f%%", seg.className.c_str(), seg.confidence * 100);
 
@@ -345,15 +321,12 @@ void drawSegmentations(cv::Mat& image, const std::vector<Segmentation>& segmenta
 }
 
 void drawFPS(cv::Mat& image, const FPSCounter& fps, int numDetections) {
-	// Background
 	cv::rectangle(image, cv::Point(10, 10), cv::Point(350, 80),
 		Config::COLOR_BLACK, cv::FILLED);
 
-	// FPS text
 	cv::putText(image, fps.toString(), cv::Point(20, 40),
 		cv::FONT_HERSHEY_SIMPLEX, 0.8, Config::COLOR_FPS, 2);
 
-	// Detections count
 	char text[32];
 	snprintf(text, sizeof(text), "Detections: %d", numDetections);
 	cv::putText(image, text, cv::Point(20, 70),
@@ -361,30 +334,24 @@ void drawFPS(cv::Mat& image, const FPSCounter& fps, int numDetections) {
 }
 
 void drawInfo(cv::Mat& image, const FPSCounter& fps, int numDetections, float alpha) {
-	// Background
 	cv::rectangle(image, cv::Point(10, 10), cv::Point(380, 110),
 		Config::COLOR_BLACK, cv::FILLED);
 
-	// FPS
 	cv::putText(image, fps.toString(), cv::Point(20, 40),
 		cv::FONT_HERSHEY_SIMPLEX, 0.8, Config::COLOR_FPS, 2);
 
-	// Detections
 	char detText[32];
 	snprintf(detText, sizeof(detText), "Detections: %d", numDetections);
 	cv::putText(image, detText, cv::Point(20, 70),
 		cv::FONT_HERSHEY_SIMPLEX, 0.7, Config::COLOR_WHITE, 2);
 
-	// Transparency
 	char alphaText[32];
 	snprintf(alphaText, sizeof(alphaText), "Transparency: %.0f%%", alpha * 100);
 	cv::putText(image, alphaText, cv::Point(20, 100),
 		cv::FONT_HERSHEY_SIMPLEX, 0.7, Config::COLOR_WHITE, 2);
 }
 
-// ------------------------------------------------------------------
 //                          Utilities
-// ------------------------------------------------------------------
 
 bool openVideoSource(cv::VideoCapture& cap, const std::string& source) {
 	if (source == "0" || source == "camera") {
@@ -403,7 +370,7 @@ bool openVideoSource(cv::VideoCapture& cap, const std::string& source) {
 void printUsage(const char* programName) {
 	std::cout << "\n";
 	std::cout << "========================================\n";
-	std::cout << "     YOLO Vehicle Detector (Task 1)     \n";
+	std::cout << "     YOLO Vehicle Detector      \n";
 	std::cout << "========================================\n";
 	std::cout << "\nUsage: " << programName << " <input>\n\n";
 	std::cout << "Input:\n";
@@ -420,7 +387,7 @@ void printUsage(const char* programName) {
 void printSegmenterUsage(const char* programName) {
 	std::cout << "\n";
 	std::cout << "========================================\n";
-	std::cout << "    YOLO Vehicle Segmenter (Task 2)     \n";
+	std::cout << "    YOLO Vehicle Segmenter    \n";
 	std::cout << "========================================\n";
 	std::cout << "\nUsage: " << programName << " <input>\n\n";
 	std::cout << "Input:\n";

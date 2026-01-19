@@ -7,35 +7,21 @@
 #include <string>
 #include <chrono>
 
-// ------------------------------------------------------------------
 //                          Constants
-// ------------------------------------------------------------------
 
 namespace Config {
-	// Input size
-	const int INPUT_WIDTH = 640;
-	const int INPUT_HEIGHT = 640;
+	const int INPUT_WIDTH = 640 , INPUT_HEIGHT = 640 , NUM_CLASSES = 80 , NUM_PREDICTIONS = 8400;
 
-	// YOLO output
-	const int NUM_CLASSES = 80;
-	const int NUM_PREDICTIONS = 8400;
-
-	// Segmentation mask
-	const int SEG_CHANNELS = 32;
-	const int SEG_WIDTH = 160;
-	const int SEG_HEIGHT = 160;
+	const int SEG_CHANNELS = 32 , SEG_WIDTH = 160 , SEG_HEIGHT = 160;
 
 	// Thresholds
 	const float CONF_THRESHOLD = 0.25f;
 	const float NMS_THRESHOLD = 0.45f;
 	const float MASK_THRESHOLD = 0.5f;
 
-	// Target classes (COCO dataset)
-	// person=0, car=2, bus=5, truck=7
 	const std::vector<int> VEHICLE_CLASSES = { 2, 5, 7 };
 	const std::vector<int> SEGMENT_CLASSES = { 0, 2, 5, 7 };
 
-	// Colors (BGR format)
 	const cv::Scalar COLOR_PERSON = cv::Scalar(255, 0, 0);
 	const cv::Scalar COLOR_CAR = cv::Scalar(0, 255, 0);
 	const cv::Scalar COLOR_BUS = cv::Scalar(255, 165, 0);
@@ -49,9 +35,7 @@ namespace Config {
 	const float DEFAULT_ALPHA = 0.5f;
 }
 
-// ------------------------------------------------------------------
 //                          Structures
-// ------------------------------------------------------------------
 
 struct Detection {
 	cv::Rect box;
@@ -93,16 +77,12 @@ public:
 	std::string toString() const;
 };
 
-// ------------------------------------------------------------------
 //                       Preprocessing
-// ------------------------------------------------------------------
 
 cv::Mat letterbox(const cv::Mat& image, LetterboxInfo& info);
 std::vector<float> imageToTensor(const cv::Mat& image);
 
-// ------------------------------------------------------------------
 //                       Postprocessing
-// ------------------------------------------------------------------
 
 bool isVehicleClass(int classId);
 bool isSegmentClass(int classId);
@@ -116,9 +96,7 @@ cv::Rect scaleBox(float cx, float cy, float w, float h,
 std::vector<Detection> applyNMS(std::vector<Detection>& detections);
 std::vector<Segmentation> applyNMSSeg(std::vector<Segmentation>& segmentations);
 
-// ------------------------------------------------------------------
 //                       Segmentation
-// ------------------------------------------------------------------
 
 cv::Mat processMask(const std::vector<float>& maskCoeffs,
 	const float* maskPrototypes,
@@ -126,9 +104,7 @@ cv::Mat processMask(const std::vector<float>& maskCoeffs,
 	const cv::Size& originalSize,
 	const LetterboxInfo& info);
 
-// ------------------------------------------------------------------
 //                         Drawing
-// ------------------------------------------------------------------
 
 void drawDetection(cv::Mat& image, const Detection& det);
 void drawDetections(cv::Mat& image, const std::vector<Detection>& detections);
@@ -137,9 +113,7 @@ void drawSegmentations(cv::Mat& image, const std::vector<Segmentation>& segmenta
 void drawFPS(cv::Mat& image, const FPSCounter& fps, int numDetections);
 void drawInfo(cv::Mat& image, const FPSCounter& fps, int numDetections, float alpha);
 
-// ------------------------------------------------------------------
 //                         Utilities
-// ------------------------------------------------------------------
 
 bool openVideoSource(cv::VideoCapture& cap, const std::string& source);
 void printUsage(const char* programName);
